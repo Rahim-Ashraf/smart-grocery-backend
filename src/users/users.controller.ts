@@ -11,10 +11,10 @@ export class UsersController {
         return this.usersService.users()
     }
 
-    // @Get(':id')
-    // getUser(@Param('id') id: string) {
-    //     return this.usersService.user(id)
-    // }
+    @Get(':id')
+    getUser(@Param('id') id: string) {
+        return this.usersService.user({ id: +id })
+    }
 
     @Post()
     async createUser(
@@ -23,10 +23,13 @@ export class UsersController {
         return this.usersService.createUser(userData)
     }
 
-    // @Patch(':id')
-    // updateUser(@Param('id') id: string) {
-    //     return this.usersService.updateUser(id)
-    // }
+    @Patch(':id')
+    updateUser(
+        @Param('id') id: string,
+        @Body() userData: { name?: string; email?: string }
+    ) {
+        return this.usersService.updateUser({ where: { id: +id }, data: userData })
+    }
 
     @Delete(':id')
     deleteUser(@Param('id') id: string) {
