@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Res } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User as UserModel } from '@prisma/client';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -18,9 +19,15 @@ export class UsersController {
 
     @Post()
     async createUser(
-        @Body() userData: { name: string; email: string },
+        @Body() userData: { name: string; email: string, password: string },
     ) {
         return this.usersService.createUser(userData)
+    }
+    @Post('auth')
+    async login(
+        @Body() userData: { email: string, password: string }, @Res() res: Response
+    ) {
+        return this.usersService.login(userData, res)
     }
 
     @Patch(':id')
