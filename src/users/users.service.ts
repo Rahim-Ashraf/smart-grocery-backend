@@ -3,6 +3,7 @@ import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
+import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class UsersService {
@@ -39,7 +40,8 @@ export class UsersService {
             const result = await bcrypt.compare(data.password as string, userData.password)
             if (result) {
                 delete userData.password
-                return res.status(200).json(userData)
+                const token = jwt.sign(userData, process.env.JWT_SECRET_KEY, { expiresIn: '30d' })
+                return res.status(200).json({ token: token })
             }
         }
         return res.status(401).json({ message: "Wrong email or password" })
